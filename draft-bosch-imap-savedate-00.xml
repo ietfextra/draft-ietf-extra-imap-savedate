@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<!-- used by XSLT processors -->
+<?rfc strict="yes" ?>
+<?rfc toc="yes"?>
+<?rfc tocdepth="4"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc subcompact="no" ?>
+
+<rfc category="std" docName="draft-bosch-imap-savedate-00" ipr="trust200902">
+<!-- ***** FRONT MATTER ***** -->
+
+<front>
+<title abbrev="IMAP - SAVEDATE Extension">
+Internet Message Access Protocol (IMAP) - SAVEDATE Extension
+</title>
+
+<author fullname="Stephan Bosch" initials="S." surname="Bosch">
+  <organization/>
+  <address>
+    <postal>
+      <street></street>
+      <city>Enschede</city>
+      <country>NL</country>
+    </postal>
+    <email>stephan@rename-it.nl</email>
+  </address>
+</author>
+
+<date/>
+
+<area>General</area>
+<!--<workgroup>APPSAWG</workgroup>-->
+<keyword>imap</keyword>
+<keyword>savedate</keyword>
+
+<abstract>
+<t> [FIXME]
+</t>
+</abstract>
+</front>
+
+<middle>
+
+<section title="Introduction">
+<t>This document defines a new Internet Message Access Protocol
+(IMAP) <xref target="IMAP4rev1"/> capability called "SAVEDATE". This capability
+adds a new IMAP message attribute called 'save date'. The save date is the date
+and time at which a message was first saved in the mailbox it currently
+resides. This message attribute differs from the existing internal date
+attribute in that it is always set to the current date and time at the moment
+the message is saved. In contrast, the internal date can be set to an arbitrary
+value for messages delivered to the mailbox using the APPEND command and it is
+usually copied from the source message for messages delivered using the COPY
+command.
+</t>
+<t>This capability extends the FETCH command and response to allow retrieving
+the date and time at which a message was saved. It extends the SEARCH command to
+allow searching messages with criteria based on when it was saved in the
+mailbox.
+</t>
+<t>[FIXME: explain why this capability is useful/necessary]</t>
+</section>
+
+<section title="Conventions Used in This Document">
+<t>In examples, "C:" indicates lines sent by a client that is connected
+to a server.  "S:" indicates lines sent by the server to the client.
+</t>
+<t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+document are to be interpreted as described in <xref target="KEYWORDS"/>.
+</t>
+</section>
+
+<section anchor="savedate" title="Save Date Message Attribute">
+<t>The save date message attribute is the date and time at which the message was
+stored in the mailbox it is now located in. Unlike the internal date
+attribute defined by <xref target="IMAP4rev1"/>, this date and time value cannot
+be set arbitrarily when a message is delivered by the IMAP4rev1 APPEND command.
+Also, when a message is delivered by the IMAP4rev1 COPY command, the save date
+attribute is not copied from the source message. Instead, the current date and
+time is always used to set the save date. The save date attribute MUST NOT
+change after the message is delivered to the mailbox.
+</t>
+<t>For some mailboxes the underlying storage may not support the save
+date message attribute. In such situations, the behavior is
+implementation-defined. Using the internal date attribute instead is 
+RECOMMENDED.
+</t>
+</section>
+
+<section anchor="changes" title="IMAP Protocol Changes">
+
+<section anchor="changes-capability" title="CAPABILITY Identification">
+<t>IMAP4 servers that support this extension MUST include "SAVEDATE" in the
+response list to the CAPABILITY command.</t>
+</section>
+
+<section anchor="changes-fetch" title="FETCH Command and Response Extensions">
+<t>This extension defines one new data item for the FETCH command:
+<list style="hanging">
+  <t hangText="SAVEDATE"><vspace blankLines="0"/>
+  The save date of the message.
+	</t>
+</list>
+</t>
+<t>This extension defines one new data item for the FETCH response:
+<list style="hanging">
+  <t hangText="SAVEDATE"><vspace blankLines="0"/>
+  A string representing the save date of the message.
+  </t>
+</list>
+</t>
+<t>Example:</t>
+<?rfc needLines="4" ?>
+<figure><artwork><![CDATA[
+C: A101 FETCH 998 (SAVEDATE)
+S: * 998 FETCH (SAVEDATE "01-Jan-2015 18:50:53 +0100")
+S: A101 OK Fetch completed.
+]]></artwork></figure>
+</section>
+
+<section anchor="changes-search" title="SEARCH Command Extensions">
+<t> This extension defines three new search keys for the SEARCH command:
+<list style="hanging">
+  <t hangText="SAVEDBEFORE &lt;date&gt;"><vspace blankLines="0"/>
+	Messages whose save date (disregarding time and timezone) is earlier than
+	the specified date.
+	</t>
+  <t hangText="SAVEDON &lt;date&gt;"><vspace blankLines="0"/>
+	Messages whose save date (disregarding time and timezone) is within the
+	specified date.
+	</t>
+  <t hangText="SAVEDSINCE &lt;date&gt;"><vspace blankLines="0"/>
+	Messages whose save date (disregarding time and timezone) is within or
+	later than the specified date.
+	</t>      
+</list>
+</t>
+<t>Example:</t>
+<?rfc needLines="7" ?>
+<figure><artwork><![CDATA[
+C: A102 SEARCH SAVEDON 28-Dec-2014
+S: * SEARCH 993 994
+S: A102 OK Search completed.
+C: A103 SEARCH SAVEDSINCE 28-Dec-2014
+S: * SEARCH 993 994 995 996 997 998 999 1000 1001
+S: A103 OK Search completed.
+]]></artwork></figure>
+</section>
+
+</section>
+
+<section anchor="Syntax" title="Formal Syntax">
+<t>The following syntax specification augments the grammar specified in
+<xref target="IMAP4rev1"/>. It uses the Augmented Backus-Naur Form (ABNF)
+notation as specified in <xref target="ABNF"/>. Elements not defined here are
+taken from <xref target="IMAP4rev1"/>.</t>
+
+<?rfc needLines="8" ?>
+<figure><artwork type="ABNF"><![CDATA[
+capability     =/ "SAVEDATE"
+
+fetch-att      =/ "SAVEDATE"
+msg-att-static =/ "SAVEDATE" SP date-time
+
+search-key     =/ "SAVEDBEFORE" SP date / "SAVEDON" SP date /
+                  "SAVEDSINCE" SP date
+]]></artwork></figure>
+
+</section>
+
+<section anchor="Security" title="Security Considerations">
+<t>There are no known additional security issues with this extension
+beyond those described in the base protocol described in
+<xref target="IMAP4rev1"/>.</t>
+</section>
+
+<section anchor="IANA" title="IANA Considerations">
+<t>The IANA is requested to add "SAVEDATE" to the "IMAP Capabilities"
+registry located at
+&lt;http://www.iana.org/assignments/imap-capabilities&gt;.</t>
+</section>
+
+<section title="Acknowledgements">
+<t>Reviews are appreciated.</t>
+</section>
+</middle>
+
+<!--  *****BACK MATTER ***** -->
+
+<back>
+<!-- References split into informative and normative -->
+
+<references title="Normative References">
+  <reference anchor='KEYWORDS'>
+    <front>
+    <title abbrev='RFC Key Words'>Key words for use in RFCs to Indicate Requirement Levels</title>
+    <author initials='S.' surname='Bradner' fullname='Scott Bradner'>
+    <organization>Harvard University</organization>
+    <address>
+      <postal>
+        <street>1350 Mass. Ave.</street>
+        <street>Cambridge</street>
+        <street>MA 02138</street>
+      </postal>
+      <phone>- +1 617 495 3864</phone>
+      <email>sob@harvard.edu</email>
+    </address>
+    </author>
+    <date year='1997' month='March' />
+    <area>General</area>
+    <keyword>keyword</keyword>
+		</front>
+
+    <seriesInfo name='BCP' value='14' />
+    <seriesInfo name='RFC' value='2119' />
+    <format type='TXT' octets='4723' target='http://www.rfc-editor.org/rfc/rfc2119.txt' />
+    <format type='HTML' octets='17491' target='http://xml.resource.org/public/rfc/html/rfc2119.html' />
+    <format type='XML' octets='5777' target='http://xml.resource.org/public/rfc/xml/rfc2119.xml' />
+  </reference>
+
+	<reference anchor='ABNF'>
+		<front>
+		<title>Augmented BNF for Syntax Specifications: ABNF</title>
+		<author initials='D.' surname='Crocker' fullname='D. Crocker'>
+			<organization />
+		</author>
+		<author initials='P.' surname='Overell' fullname='P. Overell'>
+			<organization />
+		</author>
+		<date year='2008' month='January' />
+		</front>
+		<seriesInfo name='STD' value='68' />
+		<seriesInfo name='RFC' value='5234' />
+		<format type='TXT' octets='26359' target='http://www.rfc-editor.org/rfc/rfc5234.txt' />
+	</reference>
+
+	<reference anchor='IMAP4rev1'>
+		<front>
+		<title>INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1</title>
+		<author initials='M.' surname='Crispin' fullname='M. Crispin'>
+		<organization /></author>
+		<date year='2003' month='March' />
+		</front>
+		<seriesInfo name='RFC' value='3501' />
+		<format type='TXT' octets='227640' target='http://www.rfc-editor.org/rfc/rfc3501.txt' />
+	</reference>
+
+</references>
+
+<!--<references title="Informative References">
+</references>-->
+</back>
+
+</rfc>
