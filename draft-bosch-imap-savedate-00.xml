@@ -60,12 +60,20 @@ messages delivered using the COPY command. In contrast, the save date attribute
 is always set to the current date and time at the moment the message is saved,
 irrespective of how the message is delivered and from where it originates.
 </t>
-<t>This capability extends the FETCH command and response to allow retrieving
-the date and time at which a message was saved. It extends the SEARCH command to
-allow searching messages with criteria based on when it was saved in the
-mailbox.
+<t>The save date message attribute is for example useful for implementing
+automated removal of messages from a mailbox after a configured amount
+of time. For that application, it is necessary to know when the message was
+saved in the mailbox. The internal date attribute cannot reliably be used for
+that. For example, if the internal date is used and the mailbox in question is
+used as the trash folder, the expiration time would likely be calculated
+relative to the time the message was originally received, rather than the time
+it was moved to that trash folder.
 </t>
-<t>[FIXME: explain why this capability is useful/necessary]</t>
+<t>The SAVEDATE capability extends the FETCH command and response to allow
+retrieving the date and time at which a message was saved. It extends the SEARCH
+command to allow searching messages with criteria based on when it was saved in
+the +mailbox.
+</t>
 </section>
 
 <section title="Conventions Used in This Document">
@@ -120,9 +128,9 @@ response list to the CAPABILITY command.</t>
 <t>Example:</t>
 <?rfc needLines="4" ?>
 <figure><artwork><![CDATA[
-C: A101 FETCH 998 (SAVEDATE)
-S: * 998 FETCH (SAVEDATE "01-Jan-2015 18:50:53 +0100")
-S: A101 OK Fetch completed.
+      C: A101 FETCH 998 (SAVEDATE)
+      S: * 998 FETCH (SAVEDATE "01-Jan-2015 18:50:53 +0100")
+      S: A101 OK Fetch completed.
 ]]></artwork></figure>
 </section>
 
@@ -146,12 +154,12 @@ S: A101 OK Fetch completed.
 <t>Example:</t>
 <?rfc needLines="7" ?>
 <figure><artwork><![CDATA[
-C: A102 SEARCH SAVEDON 28-Dec-2014
-S: * SEARCH 993 994
-S: A102 OK Search completed.
-C: A103 SEARCH SAVEDSINCE 28-Dec-2014
-S: * SEARCH 993 994 995 996 997 998 999 1000 1001
-S: A103 OK Search completed.
+      C: A102 SEARCH SAVEDON 28-Dec-2014
+      S: * SEARCH 993 994
+      S: A102 OK Search completed.
+      C: A103 SEARCH SAVEDSINCE 28-Dec-2014
+      S: * SEARCH 993 994 995 996 997 998 999 1000 1001
+      S: A103 OK Search completed.
 ]]></artwork></figure>
 </section>
 
