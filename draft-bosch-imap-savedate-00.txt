@@ -2,9 +2,9 @@
 
 
 Network Working Group                                           S. Bosch
-Internet-Draft                                           January 5, 2015
+Internet-Draft                                            March 23, 2015
 Intended status: Standards Track
-Expires: July 9, 2015
+Expires: September 24, 2015
 
 
       Internet Message Access Protocol (IMAP) - SAVEDATE Extension
@@ -12,7 +12,13 @@ Expires: July 9, 2015
 
 Abstract
 
-   [FIXME]
+   This document adds a new capability called "SAVEDATE" to the Internet
+   Message Access Protocol (IMAP).  It defines a new IMAP message
+   attribute called 'save date' that, unlike the existing 'internal
+   date' attribute, always indicates the moment at which the message was
+   saved in its current mailbox.  The FETCH command is extended to allow
+   retrieving the save date attribute and the SEARCH command is extended
+   with the means to use the save date as part of a search key.
 
 Status of this Memo
 
@@ -29,7 +35,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on July 9, 2015.
+   This Internet-Draft will expire on September 24, 2015.
 
 Copyright Notice
 
@@ -43,18 +49,16 @@ Copyright Notice
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
    include Simplified BSD License text as described in Section 4.e of
+
+
+
+Bosch                  Expires September 24, 2015               [Page 1]
+
+Internet-Draft          IMAP - SAVEDATE Extension             March 2015
+
+
    the Trust Legal Provisions and are provided without warranty as
    described in the Simplified BSD License.
-
-
-
-
-
-
-
-Bosch                     Expires July 9, 2015                  [Page 1]
-
-Internet-Draft          IMAP - SAVEDATE Extension           January 2015
 
 
 Table of Contents
@@ -65,7 +69,7 @@ Table of Contents
    4.  IMAP Protocol Changes . . . . . . . . . . . . . . . . . . . . . 4
      4.1.  CAPABILITY Identification . . . . . . . . . . . . . . . . . 4
      4.2.  FETCH Command and Response Extensions . . . . . . . . . . . 4
-     4.3.  SEARCH Command Extensions . . . . . . . . . . . . . . . . . 4
+     4.3.  SEARCH Command Extension  . . . . . . . . . . . . . . . . . 4
    5.  Formal Syntax . . . . . . . . . . . . . . . . . . . . . . . . . 5
    6.  Security Considerations . . . . . . . . . . . . . . . . . . . . 5
    7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . . . 5
@@ -104,13 +108,9 @@ Table of Contents
 
 
 
-
-
-
-
-Bosch                     Expires July 9, 2015                  [Page 2]
+Bosch                  Expires September 24, 2015               [Page 2]
 
-Internet-Draft          IMAP - SAVEDATE Extension           January 2015
+Internet-Draft          IMAP - SAVEDATE Extension             March 2015
 
 
 1.  Introduction
@@ -126,8 +126,8 @@ Internet-Draft          IMAP - SAVEDATE Extension           January 2015
    APPEND command and it is usually copied from the source message for
    messages delivered using the COPY command.  In contrast, the save
    date attribute is always set to the current date and time at the
-   moment the message is saved, irrespective of how the message is
-   delivered and from where it originates.
+   moment the message is saved in the mailbox, irrespective of how the
+   message is delivered and from where it originates.
 
    The save date message attribute is for example useful for
    implementing automated removal of messages from a mailbox after a
@@ -142,7 +142,7 @@ Internet-Draft          IMAP - SAVEDATE Extension           January 2015
    The SAVEDATE capability extends the FETCH command and response to
    allow retrieving the date and time at which a message was saved.  It
    extends the SEARCH command to allow searching messages with criteria
-   based on when it was saved in the +mailbox.
+   based on when it was saved in the mailbox.
 
 
 2.  Conventions Used in This Document
@@ -164,9 +164,9 @@ Internet-Draft          IMAP - SAVEDATE Extension           January 2015
 
 
 
-Bosch                     Expires July 9, 2015                  [Page 3]
+Bosch                  Expires September 24, 2015               [Page 3]
 
-Internet-Draft          IMAP - SAVEDATE Extension           January 2015
+Internet-Draft          IMAP - SAVEDATE Extension             March 2015
 
 
    IMAP4rev1 APPEND command.  Also, when a message is delivered by the
@@ -206,7 +206,7 @@ Internet-Draft          IMAP - SAVEDATE Extension           January 2015
          S: * 998 FETCH (SAVEDATE "01-Jan-2015 18:50:53 +0100")
          S: A101 OK Fetch completed.
 
-4.3.  SEARCH Command Extensions
+4.3.  SEARCH Command Extension
 
    This extension defines three new search keys for the SEARCH command:
 
@@ -220,9 +220,9 @@ Internet-Draft          IMAP - SAVEDATE Extension           January 2015
 
 
 
-Bosch                     Expires July 9, 2015                  [Page 4]
+Bosch                  Expires September 24, 2015               [Page 4]
 
-Internet-Draft          IMAP - SAVEDATE Extension           January 2015
+Internet-Draft          IMAP - SAVEDATE Extension             March 2015
 
 
    SAVEDON <date>
@@ -276,9 +276,9 @@ Internet-Draft          IMAP - SAVEDATE Extension           January 2015
 
 
 
-Bosch                     Expires July 9, 2015                  [Page 5]
+Bosch                  Expires September 24, 2015               [Page 5]
 
-Internet-Draft          IMAP - SAVEDATE Extension           January 2015
+Internet-Draft          IMAP - SAVEDATE Extension             March 2015
 
 
 9.  Normative References
@@ -332,5 +332,5 @@ Author's Address
 
 
 
-Bosch                     Expires July 9, 2015                  [Page 6]
+Bosch                  Expires September 24, 2015               [Page 6]
 

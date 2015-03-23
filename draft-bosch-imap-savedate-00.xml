@@ -40,8 +40,13 @@ Internet Message Access Protocol (IMAP) - SAVEDATE Extension
 <keyword>savedate</keyword>
 
 <abstract>
-<t> [FIXME]
-</t>
+<t>This document adds a new capability called "SAVEDATE" to the Internet Message
+Access Protocol (IMAP). It defines a new IMAP message attribute called 
+'save date' that, unlike the existing 'internal date' attribute, always
+indicates the moment at which the message was saved in its current mailbox.
+The FETCH command is extended to allow retrieving the save date attribute and
+the SEARCH command is extended with the means to use the save date as part of a
+search key.</t>
 </abstract>
 </front>
 
@@ -57,8 +62,9 @@ attribute in that it is set at the time of delivery. However, the internal date
 attribute can be set to an arbitrary value for messages delivered to the mailbox
 using the APPEND command and it is usually copied from the source message for
 messages delivered using the COPY command. In contrast, the save date attribute
-is always set to the current date and time at the moment the message is saved,
-irrespective of how the message is delivered and from where it originates.
+is always set to the current date and time at the moment the message is saved in
+the mailbox, irrespective of how the message is delivered and from where it
+originates.
 </t>
 <t>The save date message attribute is for example useful for implementing
 automated removal of messages from a mailbox after a configured amount
@@ -72,7 +78,7 @@ it was moved to that trash folder.
 <t>The SAVEDATE capability extends the FETCH command and response to allow
 retrieving the date and time at which a message was saved. It extends the SEARCH
 command to allow searching messages with criteria based on when it was saved in
-the +mailbox.
+the mailbox.
 </t>
 </section>
 
@@ -134,7 +140,7 @@ response list to the CAPABILITY command.</t>
 ]]></artwork></figure>
 </section>
 
-<section anchor="changes-search" title="SEARCH Command Extensions">
+<section anchor="changes-search" title="SEARCH Command Extension">
 <t> This extension defines three new search keys for the SEARCH command:
 <list style="hanging">
   <t hangText="SAVEDBEFORE &lt;date&gt;"><vspace blankLines="0"/>
