@@ -44,9 +44,9 @@ Internet Message Access Protocol (IMAP) - SAVEDATE Extension
 Access Protocol (IMAP). It defines a new IMAP message attribute called 
 'save date' that, unlike the existing 'internal date' attribute, always
 indicates the moment at which the message was saved in its current mailbox.
-The FETCH command is extended to allow retrieving the save date attribute and
-the SEARCH command is extended with the means to use the save date as part of a
-search key.</t>
+The SAVEDATE capability extends the FETCH command with the means to retrieve the
+save date attribute and it extends the SEARCH command to allow using that
+attribute in searching criteria.</t>
 </abstract>
 </front>
 
@@ -56,7 +56,7 @@ search key.</t>
 <t>This document extends Internet Message Access Protocol
 (IMAP) <xref target="IMAP4rev1"/> with a new capability called "SAVEDATE".
 This capability adds a new IMAP message attribute called 'save date'. The save
-date is the date and time at which a message was first saved in the mailbox it
+date is the date and time at which a message was saved in the mailbox it
 currently resides. The save date is similar to the existing internal date
 attribute in that it is set at the time of delivery. However, the internal date
 attribute can be set to an arbitrary value for messages delivered to the mailbox
@@ -66,19 +66,27 @@ is always set to the current date and time at the moment the message is saved in
 the mailbox, irrespective of how the message is delivered and from where it
 originates.
 </t>
-<t>The save date message attribute is for example useful for implementing
-automated removal of messages from a mailbox after a configured amount
-of time. For that application, it is necessary to know when the message was
-saved in the mailbox. The internal date attribute cannot reliably be used for
-that. For example, if the internal date is used and the mailbox in question is
-used as the trash folder, the expiration time would likely be calculated
-relative to the time the message was originally received, rather than the time
-it was moved to that trash folder.
+<t>The save date message attribute is useful for implementing automated removal
+of messages from a mailbox after a configured amount of time. For that
+application, it is necessary to know when the message was saved in the mailbox,
+which cannot be reliably determined using the the internal date attribute.
+</t>
+<t>For example, a common client usage pattern is to move deleted messages to
+a Trash mailbox [FIXME: reference to SPECIAL-USE RFC for discussion on
+semantics of a "trash" mailbox (?)]; these messages are considered "deleted"
+at the time they are moved to the Trash mailbox. In an effort to limit the size
+of the Trash mailbox, a client may subsequently desire to permanently remove
+(expunge) all messages in that Trash mailbox deleted before a certain time
+(e.g. a configurable expiration interval). In that case, the internal date
+attribute cannot be used, since it likely refers to the time at which the
+message was originally received. The proper time comparison attribute should
+instead be the time at which the message was saved to the Trash mailbox. Similar
+usage patterns can be observed for Archiving solutions.
 </t>
 <t>The SAVEDATE capability extends the FETCH command and response to allow
-retrieving the date and time at which a message was saved. It extends the SEARCH
-command to allow searching messages with criteria based on when it was saved in
-the mailbox.
+retrieving the date and time at which a message was saved. Also, the SAVEDATE
+capability extends the SEARCH command to allow searching messages with criteria
+based on when it was saved in the mailbox.
 </t>
 </section>
 
@@ -96,23 +104,27 @@ document are to be interpreted as described in <xref target="KEYWORDS"/>.
 <t>The save date message attribute is the date and time at which the message was
 saved in the mailbox it is now located in. Unlike the internal date
 attribute defined by <xref target="IMAP4rev1"/>, this date and time value cannot
-be set arbitrarily when a message is delivered by the IMAP4rev1 APPEND command.
-Also, when a message is delivered by the IMAP4rev1 COPY command, the save date
+be set arbitrarily when a message is delivered by the IMAP APPEND command.
+Also, when a message is delivered by the IMAP COPY command, the save date
 attribute is not copied from the source message. Instead, the current date and
-time is always used to set the save date. The save date attribute MUST NOT
-change after the message is delivered to the mailbox.
+time the message is delivered to a mailbox MUST be used to set the save date
+attribute.  Once calculated, the save date attribute MUST NOT change as long as
+the message is contained within the mailbox.
 </t>
 <t>For some mailboxes the underlying storage may not support the save
 date message attribute. In such situations, the behavior is
 implementation-defined. Using the internal date attribute instead is 
-RECOMMENDED.
+RECOMMENDED. [FIXME: This is what Dovecot currently does, but for a standard
+this is inappropriate. It should probably indicate the lack of support with
+a particular NO response code, or it could just return NULL or some other
+special value].
 </t>
 </section>
 
 <section anchor="changes" title="IMAP Protocol Changes">
 
 <section anchor="changes-capability" title="CAPABILITY Identification">
-<t>IMAP4 servers that support this extension MUST include "SAVEDATE" in the
+<t>IMAP servers that support this extension MUST include "SAVEDATE" in the
 response list to the CAPABILITY command.</t>
 </section>
 
@@ -201,7 +213,9 @@ registry located at
 </section>
 
 <section title="Acknowledgements">
-<t>Reviews are appreciated.</t>
+<t>Thanks to Alexey Melnikov and Michael Slusarz for reviews and suggestions.
+</t>
+<t>More reviews are appreciated.</t>
 </section>
 </middle>
 

@@ -2,9 +2,9 @@
 
 
 Network Working Group                                           S. Bosch
-Internet-Draft                                            March 23, 2015
+Internet-Draft                                             June 24, 2015
 Intended status: Standards Track
-Expires: September 24, 2015
+Expires: December 26, 2015
 
 
       Internet Message Access Protocol (IMAP) - SAVEDATE Extension
@@ -16,9 +16,10 @@ Abstract
    Message Access Protocol (IMAP).  It defines a new IMAP message
    attribute called 'save date' that, unlike the existing 'internal
    date' attribute, always indicates the moment at which the message was
-   saved in its current mailbox.  The FETCH command is extended to allow
-   retrieving the save date attribute and the SEARCH command is extended
-   with the means to use the save date as part of a search key.
+   saved in its current mailbox.  The SAVEDATE capability extends the
+   FETCH command with the means to retrieve the save date attribute and
+   it extends the SEARCH command to allow using that attribute in
+   searching criteria.
 
 Status of this Memo
 
@@ -35,7 +36,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on September 24, 2015.
+   This Internet-Draft will expire on December 26, 2015.
 
 Copyright Notice
 
@@ -48,15 +49,15 @@ Copyright Notice
    publication of this document.  Please review these documents
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
-   include Simplified BSD License text as described in Section 4.e of
 
 
 
-Bosch                  Expires September 24, 2015               [Page 1]
+Bosch                   Expires December 26, 2015               [Page 1]
 
-Internet-Draft          IMAP - SAVEDATE Extension             March 2015
+Internet-Draft          IMAP - SAVEDATE Extension              June 2015
 
 
+   include Simplified BSD License text as described in Section 4.e of
    the Trust Legal Provisions and are provided without warranty as
    described in the Simplified BSD License.
 
@@ -65,15 +66,15 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . . . 3
    2.  Conventions Used in This Document . . . . . . . . . . . . . . . 3
-   3.  Save Date Message Attribute . . . . . . . . . . . . . . . . . . 3
+   3.  Save Date Message Attribute . . . . . . . . . . . . . . . . . . 4
    4.  IMAP Protocol Changes . . . . . . . . . . . . . . . . . . . . . 4
      4.1.  CAPABILITY Identification . . . . . . . . . . . . . . . . . 4
      4.2.  FETCH Command and Response Extensions . . . . . . . . . . . 4
-     4.3.  SEARCH Command Extension  . . . . . . . . . . . . . . . . . 4
+     4.3.  SEARCH Command Extension  . . . . . . . . . . . . . . . . . 5
    5.  Formal Syntax . . . . . . . . . . . . . . . . . . . . . . . . . 5
    6.  Security Considerations . . . . . . . . . . . . . . . . . . . . 5
-   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . . . 5
-   8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . 5
+   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . . . 6
+   8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . 6
    9.  Normative References  . . . . . . . . . . . . . . . . . . . . . 6
    Author's Address  . . . . . . . . . . . . . . . . . . . . . . . . . 6
 
@@ -107,10 +108,9 @@ Table of Contents
 
 
 
-
-Bosch                  Expires September 24, 2015               [Page 2]
+Bosch                   Expires December 26, 2015               [Page 2]
 
-Internet-Draft          IMAP - SAVEDATE Extension             March 2015
+Internet-Draft          IMAP - SAVEDATE Extension              June 2015
 
 
 1.  Introduction
@@ -118,37 +118,56 @@ Internet-Draft          IMAP - SAVEDATE Extension             March 2015
    This document extends Internet Message Access Protocol (IMAP)
    [IMAP4rev1] with a new capability called "SAVEDATE".  This capability
    adds a new IMAP message attribute called 'save date'.  The save date
-   is the date and time at which a message was first saved in the
-   mailbox it currently resides.  The save date is similar to the
-   existing internal date attribute in that it is set at the time of
-   delivery.  However, the internal date attribute can be set to an
-   arbitrary value for messages delivered to the mailbox using the
-   APPEND command and it is usually copied from the source message for
-   messages delivered using the COPY command.  In contrast, the save
-   date attribute is always set to the current date and time at the
-   moment the message is saved in the mailbox, irrespective of how the
-   message is delivered and from where it originates.
+   is the date and time at which a message was saved in the mailbox it
+   currently resides.  The save date is similar to the existing internal
+   date attribute in that it is set at the time of delivery.  However,
+   the internal date attribute can be set to an arbitrary value for
+   messages delivered to the mailbox using the APPEND command and it is
+   usually copied from the source message for messages delivered using
+   the COPY command.  In contrast, the save date attribute is always set
+   to the current date and time at the moment the message is saved in
+   the mailbox, irrespective of how the message is delivered and from
+   where it originates.
 
-   The save date message attribute is for example useful for
-   implementing automated removal of messages from a mailbox after a
-   configured amount of time.  For that application, it is necessary to
-   know when the message was saved in the mailbox.  The internal date
-   attribute cannot reliably be used for that.  For example, if the
-   internal date is used and the mailbox in question is used as the
-   trash folder, the expiration time would likely be calculated relative
-   to the time the message was originally received, rather than the time
-   it was moved to that trash folder.
+   The save date message attribute is useful for implementing automated
+   removal of messages from a mailbox after a configured amount of time.
+   For that application, it is necessary to know when the message was
+   saved in the mailbox, which cannot be reliably determined using the
+   the internal date attribute.
+
+   For example, a common client usage pattern is to move deleted
+   messages to a Trash mailbox [FIXME: reference to SPECIAL-USE RFC for
+   discussion on semantics of a "trash" mailbox (?)]; these messages are
+   considered "deleted" at the time they are moved to the Trash mailbox.
+   In an effort to limit the size of the Trash mailbox, a client may
+   subsequently desire to permanently remove (expunge) all messages in
+   that Trash mailbox deleted before a certain time (e.g. a configurable
+   expiration interval).  In that case, the internal date attribute
+   cannot be used, since it likely refers to the time at which the
+   message was originally received.  The proper time comparison
+   attribute should instead be the time at which the message was saved
+   to the Trash mailbox.  Similar usage patterns can be observed for
+   Archiving solutions.
 
    The SAVEDATE capability extends the FETCH command and response to
-   allow retrieving the date and time at which a message was saved.  It
-   extends the SEARCH command to allow searching messages with criteria
-   based on when it was saved in the mailbox.
+   allow retrieving the date and time at which a message was saved.
+   Also, the SAVEDATE capability extends the SEARCH command to allow
+   searching messages with criteria based on when it was saved in the
+   mailbox.
 
 
 2.  Conventions Used in This Document
 
    In examples, "C:" indicates lines sent by a client that is connected
    to a server.  "S:" indicates lines sent by the server to the client.
+
+
+
+
+Bosch                   Expires December 26, 2015               [Page 3]
+
+Internet-Draft          IMAP - SAVEDATE Extension              June 2015
+
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -161,31 +180,27 @@ Internet-Draft          IMAP - SAVEDATE Extension             March 2015
    message was saved in the mailbox it is now located in.  Unlike the
    internal date attribute defined by [IMAP4rev1], this date and time
    value cannot be set arbitrarily when a message is delivered by the
-
-
-
-Bosch                  Expires September 24, 2015               [Page 3]
-
-Internet-Draft          IMAP - SAVEDATE Extension             March 2015
-
-
-   IMAP4rev1 APPEND command.  Also, when a message is delivered by the
-   IMAP4rev1 COPY command, the save date attribute is not copied from
-   the source message.  Instead, the current date and time is always
-   used to set the save date.  The save date attribute MUST NOT change
-   after the message is delivered to the mailbox.
+   IMAP APPEND command.  Also, when a message is delivered by the IMAP
+   COPY command, the save date attribute is not copied from the source
+   message.  Instead, the current date and time the message is delivered
+   to a mailbox MUST be used to set the save date attribute.  Once
+   calculated, the save date attribute MUST NOT change as long as the
+   message is contained within the mailbox.
 
    For some mailboxes the underlying storage may not support the save
    date message attribute.  In such situations, the behavior is
    implementation-defined.  Using the internal date attribute instead is
-   RECOMMENDED.
+   RECOMMENDED.  [FIXME: This is what Dovecot currently does, but for a
+   standard this is inappropriate.  It should probably indicate the lack
+   of support with a particular NO response code, or it could just
+   return NULL or some other special value].
 
 
 4.  IMAP Protocol Changes
 
 4.1.  CAPABILITY Identification
 
-   IMAP4 servers that support this extension MUST include "SAVEDATE" in
+   IMAP servers that support this extension MUST include "SAVEDATE" in
    the response list to the CAPABILITY command.
 
 4.2.  FETCH Command and Response Extensions
@@ -202,6 +217,14 @@ Internet-Draft          IMAP - SAVEDATE Extension             March 2015
 
    Example:
 
+
+
+
+Bosch                   Expires December 26, 2015               [Page 4]
+
+Internet-Draft          IMAP - SAVEDATE Extension              June 2015
+
+
          C: A101 FETCH 998 (SAVEDATE)
          S: * 998 FETCH (SAVEDATE "01-Jan-2015 18:50:53 +0100")
          S: A101 OK Fetch completed.
@@ -213,17 +236,6 @@ Internet-Draft          IMAP - SAVEDATE Extension             March 2015
    SAVEDBEFORE <date>
       Messages whose save date (disregarding time and timezone) is
       earlier than the specified date.
-
-
-
-
-
-
-
-Bosch                  Expires September 24, 2015               [Page 4]
-
-Internet-Draft          IMAP - SAVEDATE Extension             March 2015
-
 
    SAVEDON <date>
       Messages whose save date (disregarding time and timezone) is
@@ -263,6 +275,12 @@ Internet-Draft          IMAP - SAVEDATE Extension             March 2015
    beyond those described in the base protocol described in [IMAP4rev1].
 
 
+
+Bosch                   Expires December 26, 2015               [Page 5]
+
+Internet-Draft          IMAP - SAVEDATE Extension              June 2015
+
+
 7.  IANA Considerations
 
    The IANA is requested to add "SAVEDATE" to the "IMAP Capabilities"
@@ -272,13 +290,10 @@ Internet-Draft          IMAP - SAVEDATE Extension             March 2015
 
 8.  Acknowledgements
 
-   Reviews are appreciated.
+   Thanks to Alexey Melnikov and Michael Slusarz for reviews and
+   suggestions.
 
-
-
-Bosch                  Expires September 24, 2015               [Page 5]
-
-Internet-Draft          IMAP - SAVEDATE Extension             March 2015
+   More reviews are appreciated.
 
 
 9.  Normative References
@@ -317,20 +332,5 @@ Author's Address
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Bosch                  Expires September 24, 2015               [Page 6]
+Bosch                   Expires December 26, 2015               [Page 6]
 
