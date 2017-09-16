@@ -158,7 +158,7 @@ Internet-Draft          IMAP - SAVEDATE Extension         September 2017
    command or a command sequence involving the COPY command [IMAP-MOVE],
    the message always gets a new save date in the destination mailbox.
 
-   For some mailboxes the underlying storage may not support the save
+   For some mailboxes, the underlying storage may not support the save
    date message attribute.  In such situations, the behavior is
    implementation-defined.  Using the internal date attribute instead is
    RECOMMENDED.  [FIXME: This is what Dovecot currently does, but for a

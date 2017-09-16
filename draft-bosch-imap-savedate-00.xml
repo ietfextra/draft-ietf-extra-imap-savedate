@@ -121,7 +121,7 @@ another mailbox, either using the MOVE command or a command sequence involving
 the COPY command <xref target="IMAP-MOVE"/>, the message always gets a new
 save date in the destination mailbox.
 </t>
-<t>For some mailboxes the underlying storage may not support the save
+<t>For some mailboxes, the underlying storage may not support the save
 date message attribute. In such situations, the behavior is
 implementation-defined. Using the internal date attribute instead is 
 RECOMMENDED. [FIXME: This is what Dovecot currently does, but for a standard
