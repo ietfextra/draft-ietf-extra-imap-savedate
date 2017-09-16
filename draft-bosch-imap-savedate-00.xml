@@ -106,11 +106,20 @@ document are to be interpreted as described in <xref target="KEYWORDS"/>.
 saved in the mailbox it is now located in. Unlike the internal date
 attribute defined by <xref target="IMAP4rev1"/>, this date and time value cannot
 be set arbitrarily when a message is delivered by the IMAP APPEND command.
-Also, when a message is delivered by the IMAP COPY command, the save date
+Also, when a message is delivered to the mailbox by the
+<xref target="IMAP4rev1">IMAP COPY command</xref> or the
+<xref target="IMAP-MOVE">IMAP MOVE command</xref>, the save date
 attribute is not copied from the source message. Instead, the current date and
-time the message is delivered to a mailbox MUST be used to set the save date
-attribute.  Once calculated, the save date attribute MUST NOT change as long as
-the message is contained within the mailbox.
+time at which the message is delivered to a mailbox MUST be used to set the
+save date attribute. Once calculated, the save date attribute MUST NOT change
+as long as the message is contained within the same mailbox.</t>
+
+<t>This means that when the message is copied to another mailbox, the save date
+of the message in source mailbox remains unaffected; only the new copy of the
+message gets a new save date. Consequently, when the the message is moved to
+another mailbox, either using the MOVE command or a command sequence involving
+the COPY command <xref target="IMAP-MOVE"/>, the message always gets a new
+save date in the destination mailbox.
 </t>
 <t>For some mailboxes the underlying storage may not support the save
 date message attribute. In such situations, the behavior is
@@ -217,8 +226,8 @@ registry located at
 </section>
 
 <section title="Acknowledgements">
-<t>Thanks to Alexey Melnikov and Michael Slusarz for reviews and suggestions.
-</t>
+<t>Thanks to Alexey Melnikov, Timo Sirainen, and Michael Slusarz for reviews
+and suggestions.</t>
 <t>More reviews are appreciated.</t>
 </section>
 </middle>
@@ -281,6 +290,19 @@ registry located at
 		</front>
 		<seriesInfo name='RFC' value='3501' />
 		<format type='TXT' octets='227640' target='http://www.rfc-editor.org/rfc/rfc3501.txt' />
+	</reference>
+
+	<reference anchor='IMAP-MOVE'>
+		<front>
+		<title>Internet Message Access Protocol (IMAP) - MOVE Extension</title>
+		<author initials='A.' surname='Gulbrandsen' fullname='A. Gulbrandsen'>
+		<organization /></author>
+		<author initials='N.' surname='Freed' fullname='N. Freed'>
+		<organization /></author>
+		<date year='2013' month='January' />
+		</front>
+		<seriesInfo name='RFC' value='6851' />
+		<format type='TXT' octets='15689' target='http://www.rfc-editor.org/rfc/rfc6851.txt' />
 	</reference>
 
 </references>
