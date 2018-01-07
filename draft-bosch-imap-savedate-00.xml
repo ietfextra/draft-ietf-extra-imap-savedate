@@ -73,8 +73,7 @@ application, it is necessary to know when the message was saved in the mailbox,
 which cannot be reliably determined using the the internal date attribute.
 </t>
 <t>For example, a common client usage pattern is to move deleted messages to
-a Trash mailbox [FIXME: reference to SPECIAL-USE RFC for discussion on
-semantics of a "trash" mailbox (?)]; these messages are considered "deleted"
+a Trash mailbox; these messages are considered "deleted"
 at the time they are moved to the Trash mailbox. In an effort to limit the size
 of the Trash mailbox, a client may subsequently desire to permanently remove
 (expunge) all messages in that Trash mailbox deleted before a certain time

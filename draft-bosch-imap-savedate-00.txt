@@ -101,11 +101,11 @@ Table of Contents
    the internal date attribute.
 
    For example, a common client usage pattern is to move deleted
-   messages to a Trash mailbox [FIXME: reference to SPECIAL-USE RFC for
-   discussion on semantics of a "trash" mailbox (?)]; these messages are
-   considered "deleted" at the time they are moved to the Trash mailbox.
-   In an effort to limit the size of the Trash mailbox, a client may
-   subsequently desire to permanently remove (expunge) all messages in
+   messages to a Trash mailbox; these messages are considered "deleted"
+   at the time they are moved to the Trash mailbox.  In an effort to
+   limit the size of the Trash mailbox, a client may subsequently desire
+   to permanently remove (expunge) all messages in that Trash mailbox
+   deleted before a certain time (e.g. a configurable expiration
 
 
 
@@ -114,13 +114,12 @@ Bosch                     Expires July 11, 2018                 [Page 2]
 Internet-Draft          IMAP - SAVEDATE Extension           January 2018
 
 
-   that Trash mailbox deleted before a certain time (e.g. a configurable
-   expiration interval).  In that case, the internal date attribute
-   cannot be used, since it likely refers to the time at which the
-   message was originally received.  The proper time comparison
-   attribute should instead be the time at which the message was saved
-   to the Trash mailbox.  Similar usage patterns can be observed for
-   Archiving solutions.
+   interval).  In that case, the internal date attribute cannot be used,
+   since it likely refers to the time at which the message was
+   originally received.  The proper time comparison attribute should
+   instead be the time at which the message was saved to the Trash
+   mailbox.  Similar usage patterns can be observed for Archiving
+   solutions.
 
    The SAVEDATE capability extends the FETCH command and response to
    allow retrieving the date and time at which a message was saved.
@@ -162,6 +161,7 @@ Internet-Draft          IMAP - SAVEDATE Extension           January 2018
    date message attribute.  In such situations, the behavior is
    implementation-defined.  Using the internal date attribute instead is
    RECOMMENDED.  [FIXME: This is what Dovecot currently does, but for a
+   standard this is inappropriate.  It should probably indicate the lack
 
 
 
@@ -170,7 +170,6 @@ Bosch                     Expires July 11, 2018                 [Page 3]
 Internet-Draft          IMAP - SAVEDATE Extension           January 2018
 
 
-   standard this is inappropriate.  It should probably indicate the lack
    of support with a particular NO response code, or it could just
    return NULL or some other special value].
 
@@ -216,6 +215,7 @@ Internet-Draft          IMAP - SAVEDATE Extension           January 2018
       within or later than the specified date.
 
    Example:
+
 
 
 
