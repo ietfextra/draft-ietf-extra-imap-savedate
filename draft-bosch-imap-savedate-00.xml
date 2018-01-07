@@ -120,13 +120,9 @@ another mailbox, either using the MOVE command or a command sequence involving
 the COPY command <xref target="IMAP-MOVE"/>, the message always gets a new
 save date in the destination mailbox.
 </t>
-<t>For some mailboxes, the underlying storage may not support the save
-date message attribute. In such situations, the behavior is
-implementation-defined. Using the internal date attribute instead is 
-RECOMMENDED. [FIXME: This is what Dovecot currently does, but for a standard
-this is inappropriate. It should probably indicate the lack of support with
-a particular NO response code, or it could just return NULL or some other
-special value].
+<t>For some specific mailboxes, the underlying storage may not support the save
+date message attribute. The handling of this situation is described in detail in
+the next section for each involved IMAP command.
 </t>
 </section>
 
@@ -142,13 +138,15 @@ response list to the CAPABILITY command.</t>
 <list style="hanging">
   <t hangText="SAVEDATE"><vspace blankLines="0"/>
   The save date of the message.
-	</t>
+  </t>
 </list>
 </t>
 <t>This extension defines one new data item for the FETCH response:
 <list style="hanging">
   <t hangText="SAVEDATE"><vspace blankLines="0"/>
-  A string representing the save date of the message.
+  A string representing the save date of the message. However, if the underlying
+  mailbox storage does not support the save date message attribute, the value
+  returned for the SAVEDATE item is always NIL, rather than a string.
   </t>
 </list>
 </t>
@@ -178,6 +176,11 @@ response list to the CAPABILITY command.</t>
 	</t>      
 </list>
 </t>
+<t>These search keys cannot be used with a mailbox for which the underlying
+storage does not support the save date message attribute. If any of
+these search keys are used with the SEARCH command when the selected mailbox
+has no support for the save date attribute, the SEARCH command MUST return a
+tagged NO response.</t>
 <t>Example:</t>
 <?rfc needLines="7" ?>
 <figure><artwork><![CDATA[
@@ -203,7 +206,7 @@ taken from <xref target="IMAP4rev1"/>.</t>
 capability     =/ "SAVEDATE"
 
 fetch-att      =/ "SAVEDATE"
-msg-att-static =/ "SAVEDATE" SP date-time
+msg-att-static =/ "SAVEDATE" SP (date-time / nil)
 
 search-key     =/ "SAVEDBEFORE" SP date /
                   "SAVEDON" SP date /
@@ -302,7 +305,6 @@ for reviews and suggestions.</t>
 		<seriesInfo name='RFC' value='6851' />
 		<format type='TXT' octets='15689' target='http://www.rfc-editor.org/rfc/rfc6851.txt' />
 	</reference>
-
 </references>
 
 <!--<references title="Informative References">

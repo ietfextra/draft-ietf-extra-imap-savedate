@@ -75,7 +75,7 @@ Table of Contents
    6.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
    7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   5
    8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   5
-   9.  Normative References  . . . . . . . . . . . . . . . . . . . .   5
+   9.  Normative References  . . . . . . . . . . . . . . . . . . . .   6
    Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   6
 
 1.  Introduction
@@ -157,11 +157,11 @@ Internet-Draft          IMAP - SAVEDATE Extension           January 2018
    command or a command sequence involving the COPY command [IMAP-MOVE],
    the message always gets a new save date in the destination mailbox.
 
-   For some mailboxes, the underlying storage may not support the save
-   date message attribute.  In such situations, the behavior is
-   implementation-defined.  Using the internal date attribute instead is
-   RECOMMENDED.  [FIXME: This is what Dovecot currently does, but for a
-   standard this is inappropriate.  It should probably indicate the lack
+   For some specific mailboxes, the underlying storage may not support
+   the save date message attribute.  The handling of this situation is
+   described in detail in the next section for each involved IMAP
+   command.
+
 
 
 
@@ -169,9 +169,6 @@ Bosch                     Expires July 11, 2018                 [Page 3]
 
 Internet-Draft          IMAP - SAVEDATE Extension           January 2018
 
-
-   of support with a particular NO response code, or it could just
-   return NULL or some other special value].
 
 4.  IMAP Protocol Changes
 
@@ -190,7 +187,10 @@ Internet-Draft          IMAP - SAVEDATE Extension           January 2018
    This extension defines one new data item for the FETCH response:
 
    SAVEDATE
-      A string representing the save date of the message.
+      A string representing the save date of the message.  However, if
+      the underlying mailbox storage does not support the save date
+      message attribute, the value returned for the SAVEDATE item is
+      always NIL, rather than a string.
 
    Example:
 
@@ -214,9 +214,9 @@ Internet-Draft          IMAP - SAVEDATE Extension           January 2018
       Messages whose save date (disregarding time and timezone) is
       within or later than the specified date.
 
-   Example:
-
-
+   These search keys cannot be used with a mailbox for which the
+   underlying storage does not support the save date message attribute.
+   If any of these search keys are used with the SEARCH command when the
 
 
 
@@ -225,6 +225,11 @@ Bosch                     Expires July 11, 2018                 [Page 4]
 
 Internet-Draft          IMAP - SAVEDATE Extension           January 2018
 
+
+   selected mailbox has no support for the save date attribute, the
+   SEARCH command MUST return a tagged NO response.
+
+   Example:
 
          C: A102 SEARCH SAVEDON 28-Dec-2014
          S: * SEARCH 993 994
@@ -243,7 +248,7 @@ Internet-Draft          IMAP - SAVEDATE Extension           January 2018
    capability     =/ "SAVEDATE"
 
    fetch-att      =/ "SAVEDATE"
-   msg-att-static =/ "SAVEDATE" SP date-time
+   msg-att-static =/ "SAVEDATE" SP (date-time / nil)
 
    search-key     =/ "SAVEDBEFORE" SP date /
                      "SAVEDON" SP date /
@@ -265,14 +270,9 @@ Internet-Draft          IMAP - SAVEDATE Extension           January 2018
    Thanks to Bron Gondwana, Alexey Melnikov, Timo Sirainen, and Michael
    Slusarz for reviews and suggestions.
 
-9.  Normative References
 
-   [ABNF]     Crocker, D. and P. Overell, "Augmented BNF for Syntax
-              Specifications: ABNF", STD 68, RFC 5234, January 2008.
 
-   [IMAP-MOVE]
-              Gulbrandsen, A. and N. Freed, "Internet Message Access
-              Protocol (IMAP) - MOVE Extension", RFC 6851, January 2013.
+
 
 
 
@@ -281,6 +281,15 @@ Bosch                     Expires July 11, 2018                 [Page 5]
 
 Internet-Draft          IMAP - SAVEDATE Extension           January 2018
 
+
+9.  Normative References
+
+   [ABNF]     Crocker, D. and P. Overell, "Augmented BNF for Syntax
+              Specifications: ABNF", STD 68, RFC 5234, January 2008.
+
+   [IMAP-MOVE]
+              Gulbrandsen, A. and N. Freed, "Internet Message Access
+              Protocol (IMAP) - MOVE Extension", RFC 6851, January 2013.
 
    [IMAP4rev1]
               Crispin, M., "INTERNET MESSAGE ACCESS PROTOCOL - VERSION
@@ -299,15 +308,6 @@ Author's Address
    Finland
 
    Email: stephan.bosch@dovecot.fi
-
-
-
-
-
-
-
-
-
 
 
 
