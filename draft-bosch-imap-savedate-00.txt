@@ -4,8 +4,8 @@
 
 Network Working Group                                           S. Bosch
 Internet-Draft                                                Dovecot Oy
-Intended status: Standards Track                      September 16, 2017
-Expires: March 20, 2018
+Intended status: Standards Track                         January 7, 2018
+Expires: July 11, 2018
 
 
       Internet Message Access Protocol (IMAP) - SAVEDATE Extension
@@ -37,11 +37,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on March 20, 2018.
+   This Internet-Draft will expire on July 11, 2018.
 
 Copyright Notice
 
-   Copyright (c) 2017 IETF Trust and the persons identified as the
+   Copyright (c) 2018 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Bosch                    Expires March 20, 2018                 [Page 1]
+Bosch                     Expires July 11, 2018                 [Page 1]
 
-Internet-Draft          IMAP - SAVEDATE Extension         September 2017
+Internet-Draft          IMAP - SAVEDATE Extension           January 2018
 
 
    include Simplified BSD License text as described in Section 4.e of
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Bosch                    Expires March 20, 2018                 [Page 2]
+Bosch                     Expires July 11, 2018                 [Page 2]
 
-Internet-Draft          IMAP - SAVEDATE Extension         September 2017
+Internet-Draft          IMAP - SAVEDATE Extension           January 2018
 
 
    that Trash mailbox deleted before a certain time (e.g. a configurable
@@ -165,9 +165,9 @@ Internet-Draft          IMAP - SAVEDATE Extension         September 2017
 
 
 
-Bosch                    Expires March 20, 2018                 [Page 3]
+Bosch                     Expires July 11, 2018                 [Page 3]
 
-Internet-Draft          IMAP - SAVEDATE Extension         September 2017
+Internet-Draft          IMAP - SAVEDATE Extension           January 2018
 
 
    standard this is inappropriate.  It should probably indicate the lack
@@ -221,9 +221,9 @@ Internet-Draft          IMAP - SAVEDATE Extension         September 2017
 
 
 
-Bosch                    Expires March 20, 2018                 [Page 4]
+Bosch                     Expires July 11, 2018                 [Page 4]
 
-Internet-Draft          IMAP - SAVEDATE Extension         September 2017
+Internet-Draft          IMAP - SAVEDATE Extension           January 2018
 
 
          C: A102 SEARCH SAVEDON 28-Dec-2014
@@ -262,8 +262,8 @@ Internet-Draft          IMAP - SAVEDATE Extension         September 2017
 
 8.  Acknowledgements
 
-   Thanks to Alexey Melnikov, Timo Sirainen, and Michael Slusarz for
-   reviews and suggestions.
+   Thanks to Bron Gondwana, Alexey Melnikov, Timo Sirainen, and Michael
+   Slusarz for reviews and suggestions.
 
    More reviews are appreciated.
 
@@ -277,9 +277,9 @@ Internet-Draft          IMAP - SAVEDATE Extension         September 2017
 
 
 
-Bosch                    Expires March 20, 2018                 [Page 5]
+Bosch                     Expires July 11, 2018                 [Page 5]
 
-Internet-Draft          IMAP - SAVEDATE Extension         September 2017
+Internet-Draft          IMAP - SAVEDATE Extension           January 2018
 
 
    [IMAP-MOVE]
@@ -333,4 +333,4 @@ Author's Address
 
 
 
-Bosch                    Expires March 20, 2018                 [Page 6]
+Bosch                     Expires July 11, 2018                 [Page 6]
