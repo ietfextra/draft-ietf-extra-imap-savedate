@@ -9,7 +9,7 @@ Expires: November 5, 2018
 
 
       Internet Message Access Protocol (IMAP) - SAVEDATE Extension
-                   draft-ietf-extra-imap-savedate-00
+                   draft-ietf-extra-imap-savedate-01
 
 Abstract
 
